@@ -53,13 +53,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run test:unit -- --coverage
-      - name: Upload coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage/
+      - run: npm run test:unit
 
   rtmx-health:
     name: RTMX Requirements Health
