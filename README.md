@@ -6,36 +6,66 @@ IL4/IL5 Assured Workloads boundary plugin for [aegis-cli](https://github.com/rtm
 
 aegis-cli invokes this plugin as a subprocess during `aegis init`, `aegis doctor`, and `aegis destroy`. The user never interacts with this plugin directly.
 
-```
-+------------------+       aegis-infra/v1 (JSON-line stdout)       +-------------------+
-|                  |  ─────────────────────────────────────────>   |                   |
-|   aegis-cli      |    manifest | preview | up | status | destroy |  gcp-cui-gemini   |
-|   (Rust binary)  |  <─────────────────────────────────────────   |  (Node.js/Pulumi) |
-|                  |       progress | check | result events        |                   |
-+------------------+                                               +-------------------+
-                                                                          |
-                                                                          v
-                                                                   +--------------+
-                                                                   |  Google Cloud |
-                                                                   |              |
-                                                                   |  KMS         |
-                                                                   |  VPC + VPC-SC|
-                                                                   |  Audit (GCS) |
-                                                                   |  Vertex AI   |
-                                                                   +--------------+
+```mermaid
+flowchart LR
+    subgraph Workstation
+        A["aegis-cli\n(Rust binary)"]
+        B["gcp-cui-gemini\n(Node.js / Pulumi)"]
+    end
+
+    subgraph Google Cloud
+        KMS["Cloud KMS\n(CMEK)"]
+        VPC["VPC + VPC-SC"]
+        GCS["GCS Audit Bucket"]
+        VAI["Vertex AI\n(Gemini)"]
+    end
+
+    A -- "manifest | preview | up | status | destroy\n(aegis-infra/v1 JSON stdin)" --> B
+    B -- "progress | diagnostic | check | result\n(JSON-line stdout)" --> A
+
+    B -- "Pulumi Automation API" --> KMS
+    B --> VPC
+    B --> GCS
+    B --> VAI
 ```
 
 ### Initialization State Machine
 
 The `up` subcommand executes a four-phase state machine that handles the full lifecycle from raw GCP credentials to a verified boundary:
 
-```
-+------------+     +------------------+     +-----------+     +--------+
-|  PREFLIGHT | --> |  API_ENABLEMENT  | --> |  PROVISION | --> | VERIFY |
-+------------+     +------------------+     +-----------+     +--------+
-  Validate ADC       Enable GCP APIs        Pulumi up          Health
-  Check project      Poll until active      (8 resources)      checks
-  access                                                       (4 checks)
+```mermaid
+stateDiagram-v2
+    [*] --> PREFLIGHT
+    PREFLIGHT --> API_ENABLEMENT : Credentials valid,\nproject accessible
+    PREFLIGHT --> [*] : Invalid credentials\nor project not found
+    API_ENABLEMENT --> PROVISION : All APIs enabled
+    API_ENABLEMENT --> [*] : API enable timeout
+    PROVISION --> VERIFY : Pulumi up complete\n(8 resources)
+    PROVISION --> [*] : Pulumi error
+    VERIFY --> [*] : 4 health checks\nemitted
+
+    state PREFLIGHT {
+        [*] --> ValidateADC
+        ValidateADC --> CheckProject
+    }
+
+    state API_ENABLEMENT {
+        [*] --> CheckAPIs
+        CheckAPIs --> EnableDisabled
+        EnableDisabled --> PollUntilActive
+    }
+
+    state PROVISION {
+        [*] --> PulumiUp
+        PulumiUp --> StreamProgress
+    }
+
+    state VERIFY {
+        [*] --> KMSCheck
+        KMSCheck --> VPCSCCheck
+        VPCSCCheck --> AuditCheck
+        AuditCheck --> VertexAICheck
+    }
 ```
 
 Each phase is idempotent. Re-running `up` from any interruption point converges to the same end state.
@@ -108,12 +138,44 @@ All subcommands emit newline-delimited JSON to stdout. Stderr is reserved for de
 
 Hexagonal architecture with injectable ports for all external dependencies:
 
-```
-src/
-  domain/           Zero I/O. Types, ports, events.
-  protocol/         aegis-infra/v1 wire format. StdoutEmitter, manifest schema.
-  infrastructure/   GCP-specific. Pulumi stack, Automation API, health checks, API client.
-  index.ts          CLI entrypoint. State machine orchestration.
+```mermaid
+flowchart TB
+    subgraph CLI ["index.ts (Entrypoint)"]
+        SM["State Machine\nOrchestration"]
+    end
+
+    subgraph Domain ["domain/ (Zero I/O)"]
+        Types["types.ts\nProjectConfig, ResourceOutput,\nHealthCheck, Manifest"]
+        Ports["ports.ts\nIaCEngine, HealthChecker,\nEventEmitter"]
+        Events["events.ts\nProtocolEvent union"]
+    end
+
+    subgraph Protocol ["protocol/ (Wire Format)"]
+        Emitter["StdoutEmitter"]
+        ManifestSchema["Manifest Builder"]
+    end
+
+    subgraph Infra ["infrastructure/ (GCP-Specific)"]
+        Stack["stack.ts\nPulumi Program\n(8 resources)"]
+        Auto["automation.ts\nPulumi Automation API\n(local state backend)"]
+        Health["health.ts\n4 Health Checks"]
+        GcpClient["gcp-api-client.ts\nLive GCP REST calls"]
+        InitSM["init-state-machine.ts\nPREFLIGHT / API_ENABLE"]
+    end
+
+    SM --> Ports
+    Ports -.->|implemented by| Emitter
+    Ports -.->|implemented by| Auto
+    Ports -.->|implemented by| Health
+    SM --> InitSM
+    InitSM --> GcpClient
+    Auto --> Stack
+    Emitter --> Events
+    ManifestSchema --> Types
+    Health --> Types
+
+    GcpClient -->|REST API| GCP["Google Cloud APIs"]
+    Auto -->|Pulumi Engine| GCP
 ```
 
 All GCP API calls go through the `GcpApiClient` port interface, making every phase testable at Tier 1 with mocks.
