@@ -1,0 +1,108 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    name: CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: rtmx-ai/aegis-infra-sdk
+          path: aegis-infra-sdk
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: cd aegis-infra-sdk && npm ci && npm run build
+      - run: ln -s $GITHUB_WORKSPACE/aegis-infra-sdk ../aegis-infra-sdk
+      - run: npm ci
+      - run: npm run format
+      - run: npm run lint
+      - run: npm run build
+      - run: npm run test:unit
+
+  verify-version:
+    name: Verify Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check tag matches package.json version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          echo "Tag version: $TAG_VERSION"
+          echo "Package version: $PKG_VERSION"
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "ERROR: Tag $TAG_VERSION does not match package.json version $PKG_VERSION"
+            exit 1
+          fi
+
+  build-binaries:
+    name: Build ${{ matrix.target }}
+    needs: [ci, verify-version]
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - target: darwin-arm64
+            os: macos-latest
+            bun_target: bun-darwin-arm64
+          - target: darwin-x64
+            os: macos-13
+            bun_target: bun-darwin-x64
+          - target: linux-x64
+            os: ubuntu-latest
+            bun_target: bun-linux-x64
+          - target: linux-arm64
+            os: ubuntu-24.04-arm
+            bun_target: bun-linux-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: rtmx-ai/aegis-infra-sdk
+          path: aegis-infra-sdk
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: cd aegis-infra-sdk && npm ci && npm run build
+      - run: ln -s $GITHUB_WORKSPACE/aegis-infra-sdk ../aegis-infra-sdk
+      - run: npm ci
+      - run: bun build src/index.ts --compile --outfile gcp-assured-workloads-${{ matrix.target }}
+      - name: Verify binary responds to manifest
+        run: ./gcp-assured-workloads-${{ matrix.target }} manifest | head -1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: binary-${{ matrix.target }}
+          path: gcp-assured-workloads-${{ matrix.target }}
+
+  github-release:
+    name: GitHub Release
+    needs: [build-binaries]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: binaries
+          merge-multiple: true
+      - name: Generate checksums
+        run: |
+          cd binaries
+          sha256sum gcp-assured-workloads-* > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          generate_release_notes: true
+          files: |
+            binaries/gcp-assured-workloads-*
+            binaries/SHA256SUMS.txt
