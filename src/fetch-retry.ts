@@ -63,9 +63,48 @@ function isTlsError(err: unknown): boolean {
   return false;
 }
 
+/** Default allowed domains for GCP API calls. */
+export const GCP_ALLOWED_DOMAINS = [
+  "*.googleapis.com",
+  "oauth2.googleapis.com",
+  "accounts.google.com",
+];
+
+/**
+ * Check if a URL's hostname matches an allowed domain pattern.
+ * `*.googleapis.com` matches `us-central1-aiplatform.googleapis.com`
+ * but NOT `googleapis.com.evil.com` or `evil-googleapis.com`.
+ */
+export function isDomainAllowed(url: string, allowedDomains?: string[]): boolean {
+  if (!allowedDomains || allowedDomains.length === 0) return true;
+
+  let hostname: string;
+  try {
+    hostname = new URL(url).hostname;
+  } catch {
+    return false; // Invalid URL
+  }
+
+  for (const pattern of allowedDomains) {
+    if (pattern.startsWith("*.")) {
+      const baseDomain = pattern.slice(2); // "*.googleapis.com" -> "googleapis.com"
+      if (hostname === baseDomain || hostname.endsWith("." + baseDomain)) {
+        return true;
+      }
+    } else {
+      if (hostname === pattern) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 export interface FetchRetryOptions {
   timeoutMs?: number;
   maxRetries?: number;
+  allowedDomains?: string[];
 }
 
 /**
@@ -81,6 +120,12 @@ export async function fetchWithRetry(
 ): Promise<Response> {
   const maxRetries = opts?.maxRetries ?? MAX_RETRIES;
   const timeoutMs = opts?.timeoutMs ?? TIMEOUTS.api();
+
+  // Domain allowlist enforcement (Attack 6: token exfiltration prevention)
+  if (opts?.allowedDomains && !isDomainAllowed(url, opts.allowedDomains)) {
+    const hostname = new URL(url).hostname;
+    throw new Error(`Domain ${hostname} is not in the allowed domain list`);
+  }
 
   let lastError: Error | undefined;
 

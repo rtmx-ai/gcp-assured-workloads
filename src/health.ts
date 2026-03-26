@@ -8,7 +8,7 @@
 import { KeyManagementServiceClient } from "@google-cloud/kms";
 import { Storage } from "@google-cloud/storage";
 import type { HealthChecker, InfraConfig, BoundaryOutput, HealthCheck } from "@aegis-cli/infra-sdk";
-import { fetchWithRetry, TIMEOUTS } from "./fetch-retry.js";
+import { fetchWithRetry, TIMEOUTS, GCP_ALLOWED_DOMAINS } from "./fetch-retry.js";
 import { getAdcToken } from "./token-cache.js";
 
 function handleCheckError(name: string, err: unknown): HealthCheck {
@@ -171,7 +171,7 @@ async function checkModelAccessible(
           generationConfig: { maxOutputTokens: 1 },
         }),
       },
-      { timeoutMs: TIMEOUTS.inference(), maxRetries: 1 },
+      { timeoutMs: TIMEOUTS.inference(), maxRetries: 1, allowedDomains: GCP_ALLOWED_DOMAINS },
     );
 
     if (response.ok) {

@@ -3,5 +3,15 @@
   "contract": "aegis-infra/v1",
   "name": "gcp-assured-workloads",
   "description": "IL4/IL5 Assured Workloads boundary in Google Cloud",
-  "binary-prefix": "gcp-assured-workloads"
+  "binary-prefix": "gcp-assured-workloads",
+  "author": {
+    "org": "rtmx-ai",
+    "repo": "gcp-assured-workloads",
+    "oidc-issuer": "https://token.actions.githubusercontent.com"
+  },
+  "security": {
+    "minimum-aegis-version": "0.1.0",
+    "risk-classification": "CUI",
+    "requires-network": ["*.googleapis.com"]
+  }
 }

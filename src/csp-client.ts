@@ -6,7 +6,7 @@
  */
 
 import type { CspClient, InfraConfig } from "@aegis-cli/infra-sdk";
-import { fetchWithRetry, TIMEOUTS } from "./fetch-retry.js";
+import { fetchWithRetry, TIMEOUTS, GCP_ALLOWED_DOMAINS } from "./fetch-retry.js";
 import { getAdcToken } from "./token-cache.js";
 
 export class GcpClient implements CspClient {
@@ -26,7 +26,7 @@ export class GcpClient implements CspClient {
       const resp = await fetchWithRetry(
         `https://cloudresourcemanager.googleapis.com/v1/projects/${projectId}`,
         { headers: { Authorization: `Bearer ${token}` } },
-        { timeoutMs: TIMEOUTS.api() },
+        { timeoutMs: TIMEOUTS.api(), allowedDomains: GCP_ALLOWED_DOMAINS },
       );
       return resp.ok;
     } catch {
@@ -41,7 +41,7 @@ export class GcpClient implements CspClient {
       const resp = await fetchWithRetry(
         `https://serviceusage.googleapis.com/v1/projects/${projectId}/services/${api}`,
         { headers: { Authorization: `Bearer ${token}` } },
-        { timeoutMs: TIMEOUTS.api() },
+        { timeoutMs: TIMEOUTS.api(), allowedDomains: GCP_ALLOWED_DOMAINS },
       );
       if (!resp.ok) return "DISABLED";
       const data = (await resp.json()) as { state?: string };
@@ -63,7 +63,7 @@ export class GcpClient implements CspClient {
           "Content-Type": "application/json",
         },
       },
-      { timeoutMs: TIMEOUTS.enable() },
+      { timeoutMs: TIMEOUTS.enable(), allowedDomains: GCP_ALLOWED_DOMAINS },
     );
     if (!resp.ok) {
       const body = await resp.text();
@@ -79,7 +79,7 @@ export class GcpClient implements CspClient {
       const projResp = await fetchWithRetry(
         `https://cloudresourcemanager.googleapis.com/v3/projects/${projectId}`,
         { headers: { Authorization: `Bearer ${token}` } },
-        { timeoutMs: TIMEOUTS.api() },
+        { timeoutMs: TIMEOUTS.api(), allowedDomains: GCP_ALLOWED_DOMAINS },
       );
       if (!projResp.ok) return undefined;
 
@@ -95,7 +95,7 @@ export class GcpClient implements CspClient {
             method: "POST",
             headers: { Authorization: `Bearer ${token}` },
           },
-          { timeoutMs: TIMEOUTS.api() },
+          { timeoutMs: TIMEOUTS.api(), allowedDomains: GCP_ALLOWED_DOMAINS },
         );
         if (!ancestryResp.ok) return undefined;
         const ancestry = (await ancestryResp.json()) as {
@@ -112,7 +112,7 @@ export class GcpClient implements CspClient {
       const policiesResp = await fetchWithRetry(
         `https://accesscontextmanager.googleapis.com/v1/accessPolicies?parent=${orgId}`,
         { headers: { Authorization: `Bearer ${token}` } },
-        { timeoutMs: TIMEOUTS.api() },
+        { timeoutMs: TIMEOUTS.api(), allowedDomains: GCP_ALLOWED_DOMAINS },
       );
       if (!policiesResp.ok) return undefined;
 

@@ -27,6 +27,14 @@ createPluginCli({
   cspClient: new GcpClient(),
   engine: new GcpPulumiEngine(),
   healthChecker: new GcpHealthChecker(),
+  outputValidation: {
+    vertex_endpoint: /^[a-z0-9-]+-aiplatform\.googleapis\.com$/,
+    kms_key_resource_name:
+      /^projects\/[a-z0-9-]+\/locations\/[a-z0-9-]+\/keyRings\/.+\/cryptoKeys\/.+$/,
+    vpc_name: /^[a-z][a-z0-9-]{0,62}$/,
+    audit_bucket: /^[a-z0-9][a-z0-9._-]{1,220}[a-z0-9]$/,
+    perimeter_configured: /^(true|false)$/,
+  },
   requiredApis: [
     "compute.googleapis.com",
     "cloudkms.googleapis.com",
