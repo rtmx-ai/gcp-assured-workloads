@@ -50,12 +50,16 @@ jobs:
         include:
           - target: darwin-arm64
             os: macos-latest
+            bun_target: ""
           - target: darwin-x64
-            os: macos-13
+            os: macos-latest
+            bun_target: "--target=bun-darwin-x64"
           - target: linux-x64
             os: ubuntu-latest
+            bun_target: ""
           - target: linux-arm64
             os: ubuntu-24.04-arm
+            bun_target: ""
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
@@ -64,8 +68,9 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: bun build src/index.ts --compile --outfile gcp-assured-workloads-${{ matrix.target }}
+      - run: bun build src/index.ts --compile ${{ matrix.bun_target }} --outfile gcp-assured-workloads-${{ matrix.target }}
       - name: Verify binary responds to manifest
+        if: matrix.bun_target == ''
         run: ./gcp-assured-workloads-${{ matrix.target }} manifest | head -1
       - uses: sigstore/cosign-installer@v3
       - name: Sign binary with cosign (keyless, OIDC)
