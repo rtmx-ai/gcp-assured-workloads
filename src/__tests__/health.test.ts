@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import type { BoundaryOutput, HealthCheck } from "@aegis/infra-sdk";
+import type { BoundaryOutput, HealthCheck } from "@aegis-cli/infra-sdk";
 
 // @req REQ-GCG-007: VPC-SC perimeter validation
 // Pure logic test -- no GCP API calls, no imports of GCP client libraries.

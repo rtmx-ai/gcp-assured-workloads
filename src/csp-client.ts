@@ -5,7 +5,7 @@
  * Implements: REQ-GCG-010
  */
 
-import type { CspClient, InfraConfig } from "@aegis/infra-sdk";
+import type { CspClient, InfraConfig } from "@aegis-cli/infra-sdk";
 import { fetchWithRetry, TIMEOUTS } from "./fetch-retry.js";
 import { getAdcToken } from "./token-cache.js";
 

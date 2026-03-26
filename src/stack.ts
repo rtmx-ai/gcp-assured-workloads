@@ -15,7 +15,7 @@
 
 import * as pulumi from "@pulumi/pulumi";
 import * as gcp from "@pulumi/gcp";
-import type { InfraConfig, BoundaryOutput } from "@aegis/infra-sdk";
+import type { InfraConfig, BoundaryOutput } from "@aegis-cli/infra-sdk";
 
 /** Compliance metadata labels applied to all resources per REQ-INFRA-017. */
 export function complianceLabels(impactLevel: string): Record<string, string> {

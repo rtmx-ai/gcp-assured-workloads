@@ -1,13 +1,13 @@
 /**
  * GCP boundary health checks.
- * Implements HealthChecker from @aegis/infra-sdk.
+ * Implements HealthChecker from @aegis-cli/infra-sdk.
  *
  * Implements: REQ-GCG-003, REQ-GCG-007
  */
 
 import { KeyManagementServiceClient } from "@google-cloud/kms";
 import { Storage } from "@google-cloud/storage";
-import type { HealthChecker, InfraConfig, BoundaryOutput, HealthCheck } from "@aegis/infra-sdk";
+import type { HealthChecker, InfraConfig, BoundaryOutput, HealthCheck } from "@aegis-cli/infra-sdk";
 import { fetchWithRetry, TIMEOUTS } from "./fetch-retry.js";
 import { getAdcToken } from "./token-cache.js";
 

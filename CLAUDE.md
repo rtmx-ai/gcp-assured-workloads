@@ -66,7 +66,7 @@ Three event types in the JSON-line protocol:
 
 ### Plugin Structure (SDK-based)
 
-This plugin consumes `@aegis/infra-sdk` which provides protocol, lifecycle, and CLI dispatch. The plugin implements three port interfaces:
+This plugin consumes `@aegis-cli/infra-sdk` which provides protocol, lifecycle, and CLI dispatch. The plugin implements three port interfaces:
 
 ```
 src/
@@ -77,7 +77,7 @@ src/
   stack.ts          -- Pulumi program definition (GCP resources)
 ```
 
-All protocol, state machine, and CLI code lives in `@aegis/infra-sdk`. If you are writing event emission or arg parsing, it belongs in the SDK, not here.
+All protocol, state machine, and CLI code lives in `@aegis-cli/infra-sdk`. If you are writing event emission or arg parsing, it belongs in the SDK, not here.
 
 ### Pulumi State
 

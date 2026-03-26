@@ -1,13 +1,13 @@
 /**
  * GCP Pulumi Automation API engine.
- * Implements IaCEngine from @aegis/infra-sdk.
+ * Implements IaCEngine from @aegis-cli/infra-sdk.
  *
  * Uses local file backend at ~/.aegis/state/gcp-assured-workloads/.
  */
 
 import * as automation from "@pulumi/pulumi/automation/index.js";
-import type { IaCEngine, InfraConfig, BoundaryOutput } from "@aegis/infra-sdk";
-import { resolveStateDir, ensureStateDir, buildStackName } from "@aegis/infra-sdk";
+import type { IaCEngine, InfraConfig, BoundaryOutput } from "@aegis-cli/infra-sdk";
+import { resolveStateDir, ensureStateDir, buildStackName } from "@aegis-cli/infra-sdk";
 import { defineResources, extractOutputs } from "./stack.js";
 import { GcpClient } from "./csp-client.js";
 

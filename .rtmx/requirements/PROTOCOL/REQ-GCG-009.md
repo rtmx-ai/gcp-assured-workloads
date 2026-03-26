@@ -1,8 +1,8 @@
-# REQ-GCG-009: Extract @aegis/infra-sdk for Plugin Ecosystem
+# REQ-GCG-009: Extract @aegis-cli/infra-sdk for Plugin Ecosystem
 
 ## Overview
 
-The gcp-cui-gemini plugin contains significant generic infrastructure that repeats for every backend plugin regardless of CSP or model provider. This code must be extracted into a shared SDK (`@aegis/infra-sdk`) so that plugin authors implement only three port interfaces and the SDK handles protocol compliance, lifecycle orchestration, CLI dispatch, and safety gates.
+The gcp-cui-gemini plugin contains significant generic infrastructure that repeats for every backend plugin regardless of CSP or model provider. This code must be extracted into a shared SDK (`@aegis-cli/infra-sdk`) so that plugin authors implement only three port interfaces and the SDK handles protocol compliance, lifecycle orchestration, CLI dispatch, and safety gates.
 
 This requirement was identified by analyzing DRY violations in the exemplar plugin: the protocol layer, state machine skeleton, CLI entrypoint, and domain types are CSP-agnostic and would be copy-pasted verbatim into any new plugin without the SDK.
 
@@ -19,7 +19,7 @@ This requirement was identified by analyzing DRY violations in the exemplar plug
 The SDK exports a single entrypoint function and the port interfaces a plugin must implement:
 
 ```typescript
-import { createPluginCli } from "@aegis/infra-sdk";
+import { createPluginCli } from "@aegis-cli/infra-sdk";
 
 createPluginCli({
   name: "gcp-cui-gemini",
@@ -68,15 +68,15 @@ interface HealthChecker {
 
 | Component | Source in gcp-cui-gemini | SDK Module |
 |-----------|------------------------|------------|
-| StdoutEmitter | src/protocol/emitter.ts | @aegis/infra-sdk/protocol |
-| ProtocolEvent types | src/domain/events.ts | @aegis/infra-sdk/events |
-| Manifest builder | src/protocol/manifest.ts | @aegis/infra-sdk/manifest |
-| CLI dispatch | src/index.ts (switch/case) | @aegis/infra-sdk/cli |
-| Input parsing | src/domain/types.ts (parseSubcommand, parseInput) | @aegis/infra-sdk/cli |
-| --confirm-destroy gate | src/infrastructure/init-state-machine.ts | @aegis/infra-sdk/lifecycle |
-| State machine orchestration | src/index.ts + init-state-machine.ts | @aegis/infra-sdk/lifecycle |
-| Health check aggregation | src/infrastructure/health.ts (aggregateChecks) | @aegis/infra-sdk/health |
-| State directory management | src/infrastructure/automation.ts (ensureStateDir) | @aegis/infra-sdk/state |
+| StdoutEmitter | src/protocol/emitter.ts | @aegis-cli/infra-sdk/protocol |
+| ProtocolEvent types | src/domain/events.ts | @aegis-cli/infra-sdk/events |
+| Manifest builder | src/protocol/manifest.ts | @aegis-cli/infra-sdk/manifest |
+| CLI dispatch | src/index.ts (switch/case) | @aegis-cli/infra-sdk/cli |
+| Input parsing | src/domain/types.ts (parseSubcommand, parseInput) | @aegis-cli/infra-sdk/cli |
+| --confirm-destroy gate | src/infrastructure/init-state-machine.ts | @aegis-cli/infra-sdk/lifecycle |
+| State machine orchestration | src/index.ts + init-state-machine.ts | @aegis-cli/infra-sdk/lifecycle |
+| Health check aggregation | src/infrastructure/health.ts (aggregateChecks) | @aegis-cli/infra-sdk/health |
+| State directory management | src/infrastructure/automation.ts (ensureStateDir) | @aegis-cli/infra-sdk/state |
 
 ### What Stays in Each Plugin
 
@@ -91,7 +91,7 @@ interface HealthChecker {
 ### SDK Package Structure
 
 ```
-@aegis/infra-sdk/
+@aegis-cli/infra-sdk/
   src/
     cli/
       entrypoint.ts     createPluginCli() -- wires everything

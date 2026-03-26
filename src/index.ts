@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { createPluginCli } from "@aegis/infra-sdk";
+import { createPluginCli } from "@aegis-cli/infra-sdk";
 import { GcpClient } from "./csp-client.js";
 import { GcpPulumiEngine } from "./engine.js";
 import { GcpHealthChecker } from "./health.js";

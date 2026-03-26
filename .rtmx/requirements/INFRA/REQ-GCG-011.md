@@ -37,13 +37,13 @@ Each release includes:
 ### npm Publish (Development Distribution)
 
 In addition to binaries, the plugin is published to npm as `gcp-assured-workloads` for development use:
-- Requires `@aegis/infra-sdk` as an npm dependency (not file: path)
+- Requires `@aegis-cli/infra-sdk` as an npm dependency (not file: path)
 - Plugin authors studying the exemplar can `npm install gcp-assured-workloads` and read the source
 
 ### Version Coordination
 
 - Plugin version is independent of SDK version
-- Plugin declares SDK compatibility via semver range: `"@aegis/infra-sdk": "^0.1.0"`
+- Plugin declares SDK compatibility via semver range: `"@aegis-cli/infra-sdk": "^0.1.0"`
 - Plugin version and git tag must match: tag `v0.2.0` requires package.json version `0.2.0`
 - Plugin version is also embedded in the manifest output (verified by aegis-cli)
 
