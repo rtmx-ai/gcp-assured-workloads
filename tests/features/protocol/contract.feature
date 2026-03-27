@@ -1,6 +1,6 @@
 Feature: aegis-infra/v1 Plugin Contract
   As aegis-cli
-  I need the gcp-cui-gemini plugin to speak the aegis-infra/v1 protocol
+  I need the gcp-assured-workloads plugin to speak the aegis-infra/v1 protocol
   So that I can discover, provision, and manage GCP boundaries
 
   # @req REQ-GCG-001
@@ -8,7 +8,7 @@ Feature: aegis-infra/v1 Plugin Contract
     Given the plugin binary is executable
     When the "manifest" subcommand is invoked with no arguments
     Then stdout contains exactly one JSON line
-    And the JSON includes name "gcp-cui-gemini"
+    And the JSON includes name "gcp-assured-workloads"
     And the JSON includes contract "aegis-infra/v1"
     And the JSON includes requires.inputs with project_id, region, and impact_level
     And the JSON includes provides.outputs with vertex_endpoint, kms_key_resource_name, vpc_name, and audit_bucket
