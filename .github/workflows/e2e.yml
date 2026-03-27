@@ -1,0 +1,40 @@
+name: E2E Tests
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+jobs:
+  e2e:
+    name: E2E Tests (GCP)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/385266150638/locations/global/workloadIdentityPools/github-actions/providers/rtmx-ai
+          service_account: e2e-runner@aegis-cli-demo.iam.gserviceaccount.com
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install Pulumi CLI
+        uses: pulumi/actions@v6
+        with:
+          pulumi-version: latest
+
+      - run: npm ci
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          E2E_PROJECT_ID: aegis-cli-demo
+          E2E_REGION: us-central1
+          PULUMI_CONFIG_PASSPHRASE: ""
