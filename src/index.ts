@@ -14,7 +14,7 @@ createPluginCli({
     { name: "project_id", type: "string", required: true },
     { name: "region", type: "string", default: "us-central1" },
     { name: "impact_level", type: "enum", values: ["IL4", "IL5"], default: "IL4" },
-    { name: "model", type: "string", default: "gemini-2.5-pro-001" },
+    { name: "model", type: "string", default: "gemini-2.5-pro" },
     { name: "access_policy_id", type: "string" },
   ],
   outputs: [

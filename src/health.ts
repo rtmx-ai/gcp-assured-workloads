@@ -144,7 +144,7 @@ async function checkModelAccessible(
   outputs?: BoundaryOutput,
 ): Promise<HealthCheck> {
   try {
-    const model = config.params["model"] ?? "gemini-2.5-pro-001";
+    const model = config.params["model"] ?? "gemini-2.5-pro";
     const region = config.params["region"] ?? "us-central1";
     const projectId = config.params["project_id"];
     const endpoint = outputs?.["vertex_endpoint"] ?? `${region}-aiplatform.googleapis.com`;

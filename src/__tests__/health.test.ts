@@ -119,7 +119,7 @@ function handleModelCheckError(err: unknown): HealthCheck {
 }
 
 describe("Vertex AI model access check logic", () => {
-  const model = "gemini-2.5-pro-001";
+  const model = "gemini-2.5-pro";
   const endpoint = "us-central1-aiplatform.googleapis.com";
 
   it("returns pass for HTTP 200 (model accessible)", () => {
@@ -193,8 +193,8 @@ describe("Vertex AI model access check logic", () => {
   });
 
   it("uses default model when not specified in params", () => {
-    // The health check uses config.params["model"] ?? "gemini-2.5-pro-001"
-    const defaultModel = "gemini-2.5-pro-001";
+    // The health check uses config.params["model"] ?? "gemini-2.5-pro"
+    const defaultModel = "gemini-2.5-pro";
     const result = classifyModelResponse({
       model: defaultModel,
       endpoint,
