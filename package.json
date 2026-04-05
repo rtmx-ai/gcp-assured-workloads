@@ -41,7 +41,8 @@
     "test:e2e": "NODE_OPTIONS='--import tsx' npx cucumber-js",
     "test:watch": "vitest watch",
     "build:bundle": "bun build src/index.ts --compile --outfile gcp-assured-workloads",
-    "precommit": "npm run format && npm run lint && npm run build && npm run test:unit",
+    "precommit": "npm run format && npm run lint && npm run build && npm run test:unit && npm run test:integration && npx aegis-ci-check .github/workflows/ && npm run ci:rtmx-health",
+    "ci:rtmx-health": "test -f .rtmx/config.yaml && test -f .rtmx/database.csv && test -d .rtmx/requirements/PROTOCOL && test -d .rtmx/requirements/INFRA && test -d .rtmx/requirements/STATUS",
     "prepare": "husky"
   },
   "dependencies": {
