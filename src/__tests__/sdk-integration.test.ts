@@ -28,19 +28,19 @@ describe("SDK integration (REQ-GCG-009)", () => {
 
   it("csp-client.ts implements CspClient port interface", () => {
     const src = readSource("csp-client.ts");
-    expect(src).toContain('import type { CspClient');
+    expect(src).toContain("import type { CspClient");
     expect(src).toMatch(/class\s+GcpClient\s+implements\s+CspClient/);
   });
 
   it("engine.ts implements IaCEngine port interface", () => {
     const src = readSource("engine.ts");
-    expect(src).toContain('import type { IaCEngine');
+    expect(src).toContain("import type { IaCEngine");
     expect(src).toMatch(/class\s+GcpPulumiEngine\s+implements\s+IaCEngine/);
   });
 
   it("health.ts implements HealthChecker port interface", () => {
     const src = readSource("health.ts");
-    expect(src).toContain('import type { HealthChecker');
+    expect(src).toContain("import type { HealthChecker");
     expect(src).toMatch(/class\s+GcpHealthChecker\s+implements\s+HealthChecker/);
   });
 
