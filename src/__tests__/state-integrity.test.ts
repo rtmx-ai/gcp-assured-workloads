@@ -9,7 +9,7 @@ import {
   verifyStateIntegrity,
 } from "../state-integrity.js";
 
-// @req REQ-GCG-012: State integrity
+// rtmx:req REQ-GCG-012: State integrity
 
 function createTempState(): string {
   const dir = mkdtempSync(join(tmpdir(), "aegis-state-test-"));

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { resolveTimeout } from "../fetch-retry.js";
 
-// @req REQ-GCG-010: configurable timeouts
+// rtmx:req REQ-GCG-010: configurable timeouts
 
 describe("resolveTimeout", () => {
   const originalEnv = process.env;

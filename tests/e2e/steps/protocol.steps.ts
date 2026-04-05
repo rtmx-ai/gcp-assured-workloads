@@ -1,8 +1,5 @@
-/**
- * Step definitions for tests/features/protocol/contract.feature
- *
- * @req REQ-GCG-001
- */
+// Step definitions for tests/features/protocol/contract.feature
+// rtmx:req REQ-GCG-001
 
 import { Given, When, Then } from "@cucumber/cucumber";
 import { strict as assert } from "node:assert";

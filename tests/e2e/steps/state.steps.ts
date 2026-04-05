@@ -1,8 +1,5 @@
-/**
- * Step definitions for tests/features/provisioning/state.feature
- *
- * @req REQ-GCG-004
- */
+// Step definitions for tests/features/provisioning/state.feature
+// rtmx:req REQ-GCG-004
 
 import { Given, Then } from "@cucumber/cucumber";
 import { strict as assert } from "node:assert";

@@ -8,7 +8,7 @@ Feature: Initialization State Machine
     Given the plugin binary is executable
     And input with project_id and impact_level "IL4"
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: Full initialization from clean project
     Given valid GCP ADC credentials for a project with no APIs enabled
     When the "up" subcommand is invoked
@@ -29,7 +29,7 @@ Feature: Initialization State Machine
     And check events confirm boundary health
     And the final result has success true with outputs
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: Preflight fails on invalid credentials
     Given expired GCP ADC credentials
     When the "up" subcommand is invoked
@@ -38,7 +38,7 @@ Feature: Initialization State Machine
     And the error mentions "credentials" or "authentication"
     And no subsequent state transitions occur
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: Preflight fails on nonexistent project
     Given valid GCP ADC credentials
     And input with project_id "nonexistent-project-xyz-000"
@@ -47,7 +47,7 @@ Feature: Initialization State Machine
     And the result event has success false
     And the error mentions "project" or "not found" or "permission"
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: API enablement is idempotent on fully enabled project
     Given valid GCP ADC credentials
     And all required APIs are already enabled on the project
@@ -56,7 +56,7 @@ Feature: Initialization State Machine
     And each API progress event transitions directly to "complete"
     And provisioning proceeds normally
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: API enablement handles propagation delay
     Given valid GCP ADC credentials
     And the KMS API was just enabled and returns 403 on first poll
@@ -65,7 +65,7 @@ Feature: Initialization State Machine
     And the KMS API eventually reports "complete"
     And provisioning succeeds after the delay
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: API enablement times out
     Given valid GCP ADC credentials
     And the Compute API never transitions to ENABLED within 120 seconds
@@ -75,7 +75,7 @@ Feature: Initialization State Machine
     And the error mentions "compute.googleapis.com" and "timeout"
     And no resources are created
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: Partial provision converges on retry
     Given a previous "up" that created KMS and VPC but failed on the audit bucket
     When the "up" subcommand is invoked again
@@ -84,7 +84,7 @@ Feature: Initialization State Machine
     And PROVISION creates only the missing resources
     And the final result has success true
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: Verify reports partial health without rollback
     Given a fully provisioned boundary
     And the audit bucket was manually deleted after provisioning
@@ -93,7 +93,7 @@ Feature: Initialization State Machine
     And VERIFY runs health checks
     And the final result has success true
 
-  # @req REQ-GCG-005
+  # rtmx:req REQ-GCG-005
   Scenario: State transitions are observable via diagnostic events
     Given valid GCP ADC credentials
     When the "up" subcommand is invoked

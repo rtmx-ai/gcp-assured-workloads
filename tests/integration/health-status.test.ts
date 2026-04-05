@@ -1,8 +1,5 @@
-/**
- * Integration tests for boundary health status checks.
- *
- * @req REQ-GCG-003
- */
+// Integration tests for boundary health status checks.
+// rtmx:req REQ-GCG-003
 
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";

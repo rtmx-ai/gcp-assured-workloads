@@ -1,9 +1,6 @@
-/**
- * Integration tests for the aegis-infra/v1 plugin contract.
- * Runs the mock GCP plugin as a real subprocess and validates protocol output.
- *
- * @req REQ-GCG-001
- */
+// Integration tests for the aegis-infra/v1 plugin contract.
+// Runs the mock GCP plugin as a real subprocess and validates protocol output.
+// rtmx:req REQ-GCG-001
 
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";

@@ -1,10 +1,7 @@
-/**
- * Step definitions for:
- *   tests/features/provisioning/boundary.feature
- *   tests/features/provisioning/initialization.feature
- *
- * @req REQ-GCG-002, REQ-GCG-005
- */
+// Step definitions for:
+//   tests/features/provisioning/boundary.feature
+//   tests/features/provisioning/initialization.feature
+// rtmx:req REQ-GCG-002, REQ-GCG-005
 
 import { Given, When, Then } from "@cucumber/cucumber";
 import { strict as assert } from "node:assert";

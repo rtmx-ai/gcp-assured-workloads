@@ -3,7 +3,7 @@ Feature: Boundary Health Status Checks
   I need to verify the provisioned boundary is intact
   So that I can alert the user before they attempt to use a broken boundary
 
-  # @req REQ-GCG-003
+  # rtmx:req REQ-GCG-003
   Scenario: All checks pass on healthy boundary
     Given a fully provisioned and healthy boundary
     When the "status" subcommand is invoked
@@ -13,7 +13,7 @@ Feature: Boundary Health Status Checks
     And result success is true
     And exit code is 0
 
-  # @req REQ-GCG-003
+  # rtmx:req REQ-GCG-003
   Scenario: KMS key disabled reports failure
     Given a provisioned boundary where the CMEK key has been disabled
     When the "status" subcommand is invoked
@@ -21,7 +21,7 @@ Feature: Boundary Health Status Checks
     And result success is false
     And exit code is 0
 
-  # @req REQ-GCG-003
+  # rtmx:req REQ-GCG-003
   Scenario: Missing permissions reports warning not failure
     Given valid credentials lacking Cloud KMS Viewer role
     When the "status" subcommand is invoked
@@ -29,7 +29,7 @@ Feature: Boundary Health Status Checks
     And detail mentions "permissions"
     And result success is true
 
-  # @req REQ-GCG-003
+  # rtmx:req REQ-GCG-003
   Scenario: Individual check failure does not block other checks
     Given a boundary where only the audit bucket has been deleted
     When the "status" subcommand is invoked
@@ -37,7 +37,7 @@ Feature: Boundary Health Status Checks
     And 3 checks have status "pass"
     And 1 check has status "fail"
 
-  # @req REQ-GCG-003
+  # rtmx:req REQ-GCG-003
   Scenario: Vertex AI endpoint unreachable
     Given a provisioned boundary where VPC-SC blocks outbound traffic
     When the "status" subcommand is invoked

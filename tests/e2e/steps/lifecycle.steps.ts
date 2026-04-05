@@ -1,8 +1,5 @@
-/**
- * Step definitions for tests/features/provisioning/unified-lifecycle.feature
- *
- * @req REQ-GCG-006
- */
+// Step definitions for tests/features/provisioning/unified-lifecycle.feature
+// rtmx:req REQ-GCG-006
 
 import { Given, When, Then } from "@cucumber/cucumber";
 import { strict as assert } from "node:assert";

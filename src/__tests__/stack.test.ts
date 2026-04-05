@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { complianceLabels, extractOutputs } from "../stack.js";
 
-// @req REQ-GCG-002: compliance labels and output extraction
+// rtmx:req REQ-GCG-002: compliance labels and output extraction
 
 describe("complianceLabels", () => {
   it("returns aegis-managed label", () => {

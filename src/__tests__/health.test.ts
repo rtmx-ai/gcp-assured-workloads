@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import type { BoundaryOutput, HealthCheck } from "@aegis-cli/infra-sdk";
 
-// @req REQ-GCG-007: VPC-SC perimeter validation and Vertex AI model access
+// rtmx:req REQ-GCG-007: VPC-SC perimeter validation and Vertex AI model access
 // Pure logic tests -- no GCP API calls, no imports of GCP client libraries.
 
 /** Reproduce the VPC-SC check logic from health.ts without importing the module. */
@@ -54,7 +54,7 @@ describe("VPC-SC perimeter check logic", () => {
   });
 });
 
-// @req REQ-GCG-007: Vertex AI model access validation
+// rtmx:req REQ-GCG-007: Vertex AI model access validation
 // Reproduces the HTTP status code mapping from health.ts checkModelAccessible.
 
 interface ModelCheckParams {

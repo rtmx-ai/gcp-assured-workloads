@@ -1,10 +1,7 @@
-/**
- * Step definitions for:
- *   tests/features/status/health.feature
- *   tests/features/status/vpc-sc-vertex.feature
- *
- * @req REQ-GCG-003, REQ-GCG-007
- */
+// Step definitions for:
+//   tests/features/status/health.feature
+//   tests/features/status/vpc-sc-vertex.feature
+// rtmx:req REQ-GCG-003, REQ-GCG-007
 
 import { Given, When, Then } from "@cucumber/cucumber";
 import { strict as assert } from "node:assert";

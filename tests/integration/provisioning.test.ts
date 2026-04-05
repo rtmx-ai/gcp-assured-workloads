@@ -1,9 +1,6 @@
-/**
- * Integration tests for provisioning lifecycle, initialization state machine,
- * and unified subcommand behavior.
- *
- * @req REQ-GCG-002, REQ-GCG-005, REQ-GCG-006
- */
+// Integration tests for provisioning lifecycle, initialization state machine,
+// and unified subcommand behavior.
+// rtmx:req REQ-GCG-002, REQ-GCG-005, REQ-GCG-006
 
 import { describe, it, expect } from "vitest";
 import { execFile } from "node:child_process";

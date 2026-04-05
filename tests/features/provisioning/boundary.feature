@@ -3,7 +3,7 @@ Feature: Infrastructure Provisioning
   I need to provision a CUI boundary via the up subcommand
   So that Vertex AI is accessible within an IL4/IL5 perimeter
 
-  # @req REQ-GCG-002
+  # rtmx:req REQ-GCG-002
   Scenario: Preview shows planned resources
     Given valid GCP ADC credentials for project "test-project"
     And input with project_id "test-project" and impact_level "IL4"
@@ -12,7 +12,7 @@ Feature: Infrastructure Provisioning
     And the final result event has success true
     And exit code is 0
 
-  # @req REQ-GCG-002
+  # rtmx:req REQ-GCG-002
   Scenario: Successful provisioning streams progress events
     Given valid GCP ADC credentials with Project Creator permissions
     And input with project_id "test-project" and impact_level "IL4"
@@ -23,7 +23,7 @@ Feature: Infrastructure Provisioning
     And outputs include vpc_name and audit_bucket
     And exit code is 0
 
-  # @req REQ-GCG-002
+  # rtmx:req REQ-GCG-002
   Scenario: Idempotent re-provisioning
     Given an already-provisioned boundary for project "test-project"
     When the "up" subcommand is invoked again with the same input
@@ -31,7 +31,7 @@ Feature: Infrastructure Provisioning
     And the result outputs match the original provisioning
     And exit code is 0
 
-  # @req REQ-GCG-002
+  # rtmx:req REQ-GCG-002
   Scenario: Destroy tears down all resources
     Given an already-provisioned boundary for project "test-project"
     When the "destroy" subcommand is invoked
@@ -39,7 +39,7 @@ Feature: Infrastructure Provisioning
     And the final result event has success true
     And exit code is 0
 
-  # @req REQ-GCG-002, REQ-INFRA-017
+  # rtmx:req REQ-GCG-002, REQ-INFRA-017
   Scenario: All resources have compliance metadata labels
     Given a provisioned boundary at impact level "IL4"
     When resources are inspected

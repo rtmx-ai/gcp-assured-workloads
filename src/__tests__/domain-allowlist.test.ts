@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { isDomainAllowed, GCP_ALLOWED_DOMAINS } from "../fetch-retry.js";
 
-// @req REQ-GCG-012: Domain allowlist
+// rtmx:req REQ-GCG-012: Domain allowlist
 
 describe("isDomainAllowed", () => {
   const domains = GCP_ALLOWED_DOMAINS;
